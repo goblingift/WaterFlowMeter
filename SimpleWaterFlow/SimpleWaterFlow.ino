@@ -8,8 +8,7 @@ U8G2_SH1106_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, /* reset=*/ U8X8_PIN_NONE);
 const int signalPin = 27;
 const int buttonPin = 34;
 const int resetCounterSeconds = 5;
-unsigned int  literPerHour;
-float  literPerMinute, literPerMillis, passedWaterInLiter;
+float  literPerHour, literPerMinute, literPerMillis, passedWaterInLiter;
 unsigned long currentTime, loopTime, passedMillis, lastReset;
 volatile byte pulseCount;
 int buttonState = 0;
@@ -97,6 +96,8 @@ void handleResetLogic() {
   
 }
 
+// YF-B5:       F=6.6*Q   (Q=L/MIN)
+// YF-DN40-S:   F=0.45xQ  (Q=L/min)
 void calculateWaterFlowAndPrint() {
 
   currentTime = millis();
@@ -105,11 +106,11 @@ void calculateWaterFlowAndPrint() {
     passedMillis = currentTime - loopTime;
 
     loopTime = currentTime;
-    literPerHour = pulseCount * 6.6;
+    literPerHour = (pulseCount * 60 / 6.6);
     Serial.print("Pulsecount:");
     Serial.println(pulseCount);
 
-    literPerMinute = (pulseCount / 6.6);
+    literPerMinute = literPerHour / 60;
     Serial.print(literPerMinute, 2);
     Serial.println(" Liter/min");
 
