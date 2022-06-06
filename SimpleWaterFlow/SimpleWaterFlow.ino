@@ -96,8 +96,8 @@ void handleResetLogic() {
   
 }
 
-// YF-B5:       F=6.6*Q   (Q=L/MIN)
-// YF-DN40-S:   F=0.45xQ  (Q=L/min)
+// YF-B5:       F=6.6*Q   (Q=L/min)
+// YF-DN40-S:   F=0.45*Q  (Q=L/min)
 void calculateWaterFlowAndPrint() {
 
   currentTime = millis();
@@ -110,7 +110,12 @@ void calculateWaterFlowAndPrint() {
     Serial.print("Pulsecount:");
     Serial.println(pulseCount);
 
-    literPerMinute = literPerHour / 60;
+    // calc for YF-B5
+    //literPerMinute = (pulseCount / 6.6);
+
+    // calc for YF-DN40-S
+    literPerMinute = pulseCount / 0.45;
+    
     Serial.print(literPerMinute, 2);
     Serial.println(" Liter/min");
 
